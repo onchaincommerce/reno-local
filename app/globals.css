@@ -1,26 +1,318 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Strawberry Kiwi Theme */
+  
+  /* Kiwi Green - from logo */
+  --kiwi: #6AB070;
+  --kiwi-light: #8BC891;
+  --kiwi-dark: #5A9A60;
+  --kiwi-muted: rgba(106, 176, 112, 0.85);
+  
+  /* Strawberry Pink - from Reno buildings */
+  --strawberry: #E8919A;
+  --strawberry-light: #F5B8BE;
+  --strawberry-dark: #D4747E;
+  --strawberry-muted: rgba(232, 145, 154, 0.85);
+  
+  /* Neutrals */
+  --white: #FFFFFF;
+  --off-white: #FAFAFA;
+  --light-gray: #F0F0F0;
+  --granite: #4A5568;
+  --charcoal: #1A1A2E;
+  
+  /* Semantic colors */
+  --background: var(--off-white);
+  --foreground: var(--charcoal);
+  --primary: var(--kiwi);
+  --primary-hover: var(--kiwi-dark);
+  --secondary: var(--strawberry);
+  --secondary-hover: var(--strawberry-dark);
+  --card-bg: var(--kiwi-muted);
+  --border: rgba(106, 176, 112, 0.3);
+  --shadow: rgba(106, 176, 112, 0.25);
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-primary: var(--primary);
+  --color-primary-hover: var(--primary-hover);
+  --color-secondary: var(--secondary);
+  --color-secondary-hover: var(--secondary-hover);
+  --color-card-bg: var(--card-bg);
+  --color-border: var(--border);
+  --color-charcoal: var(--charcoal);
+  --color-granite: var(--granite);
+  --color-white: var(--white);
+  --color-off-white: var(--off-white);
+  --color-light-gray: var(--light-gray);
+  /* Kiwi */
+  --color-kiwi: var(--kiwi);
+  --color-kiwi-light: var(--kiwi-light);
+  --color-kiwi-dark: var(--kiwi-dark);
+  --color-kiwi-muted: var(--kiwi-muted);
+  /* Strawberry */
+  --color-strawberry: var(--strawberry);
+  --color-strawberry-light: var(--strawberry-light);
+  --color-strawberry-dark: var(--strawberry-dark);
+  --color-strawberry-muted: var(--strawberry-muted);
+  /* Fonts */
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --font-nunito: var(--font-nunito);
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Background with Reno image - minimal overlay */
+.reno-background {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background-image: url('/Reno-DT-1400.webp');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+}
+
+/* On larger/wider screens, ensure city stays visible at bottom */
+@media (min-aspect-ratio: 16/10) {
+  .reno-background {
+    background-position: center 70%;
+  }
+}
+
+.reno-background::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(106, 176, 112, 0.08) 0%,
+    rgba(232, 145, 154, 0.1) 50%,
+    rgba(106, 176, 112, 0.12) 100%
+  );
+}
+
+/* Playful typography */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--charcoal);
+}
+
+/* Organic UI elements */
+.rounded-organic {
+  border-radius: 20px;
+}
+
+.card-shadow {
+  box-shadow: 
+    0 4px 20px var(--shadow), 
+    0 2px 6px rgba(26, 26, 46, 0.06);
+}
+
+.card-shadow-hover {
+  box-shadow: 
+    0 12px 32px var(--shadow), 
+    0 4px 12px rgba(26, 26, 46, 0.08);
+}
+
+/* Glassmorphism card - Kiwi green */
+.glass-card {
+  background: linear-gradient(145deg, rgba(106, 176, 112, 0.92), rgba(90, 154, 96, 0.88));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.glass-card > h1,
+.glass-card > h2,
+.glass-card > h3,
+.glass-card > h4 {
+  color: white;
+}
+
+/* Strawberry card variant */
+.glass-card-strawberry {
+  background: linear-gradient(145deg, rgba(232, 145, 154, 0.92), rgba(212, 116, 126, 0.88));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+/* Primary button - Strawberry */
+.btn-primary {
+  background: linear-gradient(135deg, var(--strawberry), var(--strawberry-dark));
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(232, 145, 154, 0.4);
+}
+
+.btn-primary:hover {
+  box-shadow: 0 6px 20px rgba(232, 145, 154, 0.55);
+  transform: translateY(-1px);
+}
+
+/* Secondary button - Kiwi */
+.btn-secondary {
+  background: linear-gradient(135deg, var(--kiwi), var(--kiwi-dark));
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 4px 14px rgba(106, 176, 112, 0.35);
+}
+
+.btn-secondary:hover {
+  box-shadow: 0 6px 20px rgba(106, 176, 112, 0.5);
+  transform: translateY(-1px);
+}
+
+/* Outline button */
+.btn-outline {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  color: white;
+  font-weight: 600;
+}
+
+.btn-outline:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-1px);
+}
+
+/* Success highlight - kiwi */
+.success-glow {
+  box-shadow: 0 0 20px rgba(106, 176, 112, 0.5);
+}
+
+/* Comparison card - kiwi tint */
+.comparison-positive {
+  background: linear-gradient(135deg, rgba(106, 176, 112, 0.15), rgba(106, 176, 112, 0.08));
+  border: 1px solid rgba(106, 176, 112, 0.4);
+}
+
+/* Comparison card - strawberry tint */
+.comparison-negative {
+  background: linear-gradient(135deg, rgba(232, 145, 154, 0.15), rgba(232, 145, 154, 0.08));
+  border: 1px solid rgba(232, 145, 154, 0.4);
+}
+
+/* Smooth transitions */
+* {
+  transition-property: color, background-color, border-color, box-shadow, transform, opacity;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 150ms;
+}
+
+/* Animations */
+@keyframes fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pulse-glow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 212, 170, 0.3);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(0, 212, 170, 0.5);
+  }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.2s ease-out;
+}
+
+.animate-slide-up {
+  animation: slide-up 0.35s ease-out;
+}
+
+.animate-pulse-glow {
+  animation: pulse-glow 2s ease-in-out infinite;
+}
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .rounded-organic {
+    border-radius: 16px;
+  }
+  
+  .result-card::before {
+    border-radius: 16px;
+  }
+}
+
+/* Focus styles for accessibility */
+button:focus-visible,
+input:focus-visible {
+  outline: 2px solid var(--strawberry);
+  outline-offset: 2px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Category pill active state */
+.category-active {
+  background: linear-gradient(135deg, var(--strawberry), var(--strawberry-dark));
+  color: white;
+  box-shadow: 0 4px 12px rgba(232, 145, 154, 0.4);
+}
+
+/* Input styling within glass cards */
+.glass-card input {
+  background: rgba(255, 255, 255, 0.2);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.glass-card input::placeholder {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+.glass-card input:focus {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: var(--strawberry-light);
+  outline: none;
+}
+
+/* White card for internal sections */
+.inner-card {
+  background: rgba(255, 255, 255, 0.95);
+  color: var(--charcoal);
+  border-radius: 16px;
+}
+
+.inner-card p {
+  color: var(--granite);
 }
