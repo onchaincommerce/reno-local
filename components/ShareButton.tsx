@@ -57,8 +57,8 @@ export function ShareButton({
       lines.push(`📍 ${googleMapsUri}`);
     }
     
-    // Call to action
-    lines.push(`Calculate yours:`);
+    // Call to action with URL
+    lines.push(`Calculate yours: renolocal.xyz`);
     
     return lines.join("\n\n");
   };

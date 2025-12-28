@@ -1,7 +1,7 @@
 "use client";
 
 import type { CalculatedResults } from "@/lib/utils/calculations";
-import { formatCurrency, formatRange } from "@/lib/utils/calculations";
+import { formatCurrency } from "@/lib/utils/calculations";
 import type { Frequency } from "@/lib/utils/calculations";
 import type { Category } from "@/lib/data/categories";
 
@@ -28,72 +28,81 @@ export function ResultsDisplay({
 
   // Determine if this is a chain based on confidence score or explicit flag
   const isLikelyChain = isChain || (localConfidenceScore !== undefined && localConfidenceScore < 50);
-  const isDefinitelyChain = isChain || (localConfidenceScore !== undefined && localConfidenceScore < 20);
+  
+  // Calculate what a true local business would retain (for chain comparison)
+  const trueLocalRetention = amount * category.retentionLikely;
+  
+  // Determine which way to show the comparison
+  const showingLocalBusiness = !isLikelyChain;
 
   return (
-    <div className="w-full space-y-5 animate-slide-up">
-      {/* Chain Notice */}
-      {isDefinitelyChain && (
-        <div className="p-3 rounded-lg bg-strawberry/15 border border-strawberry/30">
-          <p className="text-sm text-strawberry-dark font-medium">
-            📊 This appears to be a national chain. Showing chain-level retention rates.
+    <div className="w-full space-y-4 animate-slide-up">
+      {/* Three Card Impact Display */}
+      <div className="space-y-3">
+        
+        {/* Card 1: Local Option */}
+        <div className="inner-card p-5 shadow-lg border-2 border-kiwi/50">
+          <p className="text-xs font-semibold text-kiwi-dark uppercase tracking-wide mb-2">
+            {showingLocalBusiness ? "Local Option" : "Local Alternative"}
+          </p>
+          <p className="text-3xl font-bold text-kiwi-dark mb-1">
+            {formatCurrency(showingLocalBusiness ? results.retained.likely : trueLocalRetention)}
+          </p>
+          <p className="text-sm text-granite">
+            stays in the local economy
           </p>
         </div>
-      )}
 
-      {/* Primary Result - Local Retention */}
-      <div className={`inner-card p-6 shadow-lg border-2 ${isLikelyChain ? 'border-strawberry/40' : 'border-kiwi/40'}`}>
-        <div className="flex items-start justify-between mb-3">
-          <p className="text-sm font-medium text-granite">
-            Stays in Washoe County
+        {/* Card 2: Chain Equivalent */}
+        <div className="inner-card p-5 shadow-lg border-2 border-strawberry/50">
+          <p className="text-xs font-semibold text-strawberry-dark uppercase tracking-wide mb-2">
+            {showingLocalBusiness ? "Chain Equivalent" : "This Chain"}
           </p>
-          <span className={`text-xs px-2 py-1 rounded-full font-semibold ${
-            isLikelyChain 
-              ? 'bg-strawberry/15 text-strawberry-dark' 
-              : 'bg-kiwi/15 text-kiwi-dark'
-          }`}>
-            {isLikelyChain ? 'Chain Rate' : 'Local $'}
-          </span>
+          <p className="text-3xl font-bold text-strawberry-dark mb-1">
+            {formatCurrency(showingLocalBusiness ? results.chainRetained : results.retained.likely)}
+          </p>
+          <p className="text-sm text-granite">
+            stays in the local economy
+          </p>
         </div>
-        <p className={`text-4xl font-bold mb-2 ${isLikelyChain ? 'text-strawberry-dark' : 'text-kiwi-dark'}`}>
-          {formatCurrency(results.retained.likely)}
-        </p>
-        <p className="text-sm text-granite/70">
-          Range: {formatRange(results.retained.low, results.retained.high)}
-        </p>
+
+        {/* Card 3: Net Difference - Pink with glow/pulse */}
+        <div 
+          className="p-5 rounded-2xl border-2 border-strawberry-light animate-pulse-glow"
+          style={{ 
+            background: 'linear-gradient(135deg, #E8919A, #D4747E)',
+            boxShadow: '0 0 20px rgba(232, 145, 154, 0.5), 0 0 40px rgba(232, 145, 154, 0.3), inset 0 0 30px rgba(255, 255, 255, 0.1)'
+          }}
+        >
+          <p className="text-xs font-semibold uppercase tracking-wide mb-2 text-white/90">
+            {showingLocalBusiness ? "Your Impact" : "If You Switched"}
+          </p>
+          <p className="text-3xl font-bold mb-1 text-white">
+            +{formatCurrency(showingLocalBusiness ? results.localPremium : (trueLocalRetention - results.retained.likely))}
+          </p>
+          <p className="text-sm text-white/80">
+            {showingLocalBusiness 
+              ? "more stays local vs. a chain" 
+              : "more would stay local"}
+          </p>
+        </div>
       </div>
 
-      {/* Chain Comparison */}
-      <div className="inner-card rounded-organic p-4 border-2 border-kiwi/30">
+      {/* Total Economic Impact - smaller */}
+      <div className="inner-card p-4 border border-granite/20">
         <div className="flex items-center justify-between">
           <div>
-            <p className="text-xs font-semibold text-granite mb-1">
-              vs. National Chain
+            <p className="text-xs font-medium text-granite">
+              Total Local Activity Supported
             </p>
-            <p className="text-lg font-bold text-kiwi-dark">
-              +{formatCurrency(results.localPremium)} more local
-            </p>
-          </div>
-          <div className="text-right">
-            <p className="text-xs font-medium text-granite">Chain keeps</p>
-            <p className="text-sm font-bold text-strawberry-dark">
-              {formatCurrency(results.chainRetained)}
+            <p className="text-xs text-granite/60">
+              {category.ioMultiplier}x IMPLAN multiplier
             </p>
           </div>
+          <p className="text-xl font-bold text-charcoal">
+            {formatCurrency(results.totalImpact)}
+          </p>
         </div>
-      </div>
-
-      {/* Total Economic Impact */}
-      <div className="inner-card p-4 border-2 border-strawberry/30">
-        <p className="text-xs font-medium text-granite mb-1">
-          Total Local Activity Supported
-        </p>
-        <p className="text-2xl font-bold text-strawberry-dark">
-          {formatCurrency(results.totalImpact)}
-        </p>
-        <p className="text-xs text-granite/70 mt-1">
-          {category.ioMultiplier}x multiplier (IMPLAN Washoe County)
-        </p>
       </div>
 
       {/* Frequency Projections */}
