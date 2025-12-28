@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { getFullShareUrl } from "@/lib/utils/url-params";
 import { formatCurrency, type Frequency, type CalculatedResults } from "@/lib/utils/calculations";
 import type { Category } from "@/lib/data/categories";
 
@@ -64,7 +63,8 @@ export function ShareButton({
   };
 
   const handleShare = async () => {
-    const url = getFullShareUrl(category.key, amount, frequency);
+    // Use the main domain URL for nice OG preview (Reno background)
+    const url = "https://renolocal.xyz";
     const shareText = buildShareText();
     
     if (canShare) {
